@@ -1,0 +1,3 @@
+{
+  extends: ["github>blackdark/renovate-base//default.json5"],
+}
