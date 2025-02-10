@@ -17,7 +17,9 @@
         "patch",
         "pin"
       ],
-      "automerge": true
+      "automerge": true,
+      // only rebase when conflicted and not always
+      "rebaseWhen": "conflicted",
     },
     {
       "matchDepTypes": ["dependencies"],
