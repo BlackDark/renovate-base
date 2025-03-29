@@ -24,6 +24,18 @@
     {
       "matchDepTypes": ["dependencies"],
       "semanticCommitType": "refactor"
-    }
+    },
+    {
+      matchDatasources: ["docker"],
+      matchUpdateTypes: ["patch"],
+      groupName: "all docker patch updates",
+      groupSlug: "all-docker-patch",
+    },
+    {
+      matchDatasources: ["docker"],
+      matchUpdateTypes: ["minor"],
+      groupName: "all docker minor updates",
+      groupSlug: "all-docker-minor",
+    },
   ]
 }
