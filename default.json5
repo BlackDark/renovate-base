@@ -1,29 +1,31 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended",
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    "config:best-practices",
     "regexManagers:githubActionsVersions",
     "schedule:monthly",
+    ":automergeMinor",
+    ":automergeDigest",
     ":prConcurrentLimitNone",
-    ":prHourlyLimitNone"
+    ":prHourlyLimitNone",
   ],
-  "labels": [
-    "dependencies"
-  ],
-  "packageRules": [
+  labels: ["dependencies"],
+  packageRules: [
     {
-      "matchUpdateTypes": [
-        // "minor",
-        "patch",
-        "pin"
-      ],
-      "automerge": true,
-      // only rebase when conflicted and not always
-      "rebaseWhen": "conflicted",
+      groupName: "devDependencies (non-major)",
+      groupSlug: "dev-dependencies-non-major",
+      matchDepTypes: ["devDependencies"],
+      matchUpdateTypes: ["patch", "minor"],
     },
     {
-      "matchDepTypes": ["dependencies"],
-      "semanticCommitType": "refactor"
+      groupName: "dependencies (non-major)",
+      groupSlug: "dependencies-non-major",
+      matchDepTypes: ["dependencies"],
+      matchUpdateTypes: ["patch", "minor"],
+    },
+    {
+      matchDepTypes: ["dependencies"],
+      semanticCommitType: "refactor",
     },
     {
       matchDatasources: ["docker"],
@@ -37,5 +39,5 @@
       groupName: "all docker minor updates",
       groupSlug: "all-docker-minor",
     },
-  ]
+  ],
 }
