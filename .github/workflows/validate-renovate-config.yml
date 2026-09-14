@@ -27,6 +27,7 @@ jobs:
           persist-credentials: false
 
       - name: Validate JSON5 with renovate-config-validator
+        shell: bash
         run: |
           set -euo pipefail
           files=$(git ls-files '*.json5')
