@@ -18,14 +18,13 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
+    container:
+      image: ghcr.io/renovatebot/renovate:44.87.1@sha256:4e8c64197947c14df5b44c889aea945f2ad8460bf1bb6c96f339a84c0aff6a38
+      options: --user root
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: 24
 
       - name: Validate JSON5 with renovate-config-validator
         run: |
@@ -35,5 +34,4 @@ jobs:
             echo "No JSON5 files found"
             exit 1
           fi
-          npx --yes --package renovate@44.87.1 -- \
-            renovate-config-validator --strict --no-global ${files}
+          renovate-config-validator --strict --no-global ${files}
