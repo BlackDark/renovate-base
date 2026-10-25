@@ -3,7 +3,7 @@
   extends: [
     "config:best-practices",
     "customManagers:githubActionsVersions",
-    "schedule:monthly",
+    "schedule:weekly",
     ":automergeMinor",
     ":automergeDigest",
     ":prConcurrentLimitNone",
