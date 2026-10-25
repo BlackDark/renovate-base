@@ -36,3 +36,12 @@ jobs:
             exit 1
           fi
           renovate-config-validator --strict --no-global ${files}
+
+  check:
+    if: always()
+    needs: [validate]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: exit 1
