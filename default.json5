@@ -39,5 +39,17 @@
       groupName: "all docker minor updates",
       groupSlug: "all-docker-minor",
     },
+    {
+      matchUpdateTypes: ["digest"],
+      groupName: "all digest updates",
+      groupSlug: "all-digests",
+    },
+    {
+      // After the digest catch-all so action digests stay in this group.
+      matchManagers: ["github-actions"],
+      matchUpdateTypes: ["minor", "patch", "digest"],
+      groupName: "GitHub Actions (non-major)",
+      groupSlug: "github-actions-non-major",
+    },
   ],
 }
