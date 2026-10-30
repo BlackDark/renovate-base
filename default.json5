@@ -39,5 +39,21 @@
       groupName: "all docker minor updates",
       groupSlug: "all-docker-minor",
     },
+    {
+      matchUpdateTypes: ["digest"],
+      groupName: "all digest updates",
+      groupSlug: "all-digests",
+    },
+    {
+      // After the digest catch-all so action digests stay in this group.
+      // Restrict to action/workflow depTypes: github-actions also extracts
+      // container/service/docker images from workflows — those stay in the
+      // docker/digest groups above.
+      matchManagers: ["github-actions"],
+      matchDepTypes: ["action", "workflow"],
+      matchUpdateTypes: ["minor", "patch", "digest"],
+      groupName: "GitHub Actions (non-major)",
+      groupSlug: "github-actions-non-major",
+    },
   ],
 }
