@@ -2,7 +2,7 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   // Opt-in preset for Go repos. Extend alongside default.json5:
   //   extends: [
-  //     "github>blackdark/renovate-base",
+  //     "github>blackdark/renovate-base//default.json5",
   //     "github>blackdark/renovate-base//go.json5",
   //   ]
   //
@@ -13,9 +13,11 @@
   //    minimum language version, not a toolchain pin. Repos that treat it as
   //    the CI pin (`setup-go` go-version-file: go.mod) therefore never get
   //    patch bumps unless rangeStrategy is "bump".
-  // 2. mise's `go` tool (depName=go, packageName=golang/go) and the golang
-  //    Docker image are different managers/datasources. Without a shared
-  //    groupName they land in catch-all patch PRs while go.mod stays behind.
+  // 2. mise's go tool (depName=go or core:go, packageName=golang/go) and the
+  //    golang Docker image are different managers/datasources. Without a
+  //    shared groupName they land in catch-all patch PRs while go.mod stays
+  //    behind. Explicit backends (`core:go`, `asdf:go`, …) keep the backend
+  //    prefix in depName — match those too.
   // 3. matchPackageNames no longer falls back to depName (Renovate 38+). Use
   //    matchDepNames for the mise/gomod `go` tool; matchPackageNames only for
   //    the Docker image names.
@@ -43,7 +45,8 @@
     {
       description: "Keep mise + go.mod go pins in one PR",
       matchManagers: ["mise", "gomod"],
-      matchDepNames: ["go"],
+      // Short name (`go =`) and explicit backends (`"core:go" =`).
+      matchDepNames: ["go", "core:go", "asdf:go", "vfox:go"],
       groupName: "go toolchain",
       groupSlug: "go-toolchain",
     },

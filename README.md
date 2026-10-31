@@ -8,9 +8,12 @@ It can be used as documented at [renovate](https://docs.renovatebot.com/config-p
 
 ```json5
 {
-  extends: ["github>blackdark/renovate-base"],
+  extends: ["github>blackdark/renovate-base//default.json5"],
 }
 ```
+
+The path after `//` is required: an unnamed preset only resolves to
+`default.json` / `renovate.json`, not `default.json5`.
 
 ### Go projects
 
@@ -22,7 +25,7 @@ preset they drift apart (CI on `go-version-file: go.mod`, image on a newer
 ```json5
 {
   extends: [
-    "github>blackdark/renovate-base",
+    "github>blackdark/renovate-base//default.json5",
     "github>blackdark/renovate-base//go.json5",
   ],
 }
