@@ -1,14 +1,16 @@
 name: validate-renovate-config
 
 on:
-  push:
-    paths:
-      - "**/*.json5"
-      - ".github/workflows/validate-renovate-config.yml"
+  # Always on PRs so the required `check` gate reports (ruleset on main).
+  # Path filters previously skipped docs-only PRs and left merges blocked.
   pull_request:
+  push:
+    branches: [main]
     paths:
       - "**/*.json5"
       - ".github/workflows/validate-renovate-config.yml"
+      - "AGENTS.md"
+      - "README.md"
 
 permissions: {}
 
