@@ -37,6 +37,21 @@ preset they drift apart (CI on `go-version-file: go.mod`, image on a newer
 See the comments in [`go.json5`](go.json5) for the failure mode and matcher
 details (`matchDepNames` vs `matchPackageNames`).
 
+### Rust projects
+
+Also extend `rust.json5`: it bumps a pinned `channel = "x.y.z"` in
+`rust-toolchain.toml`, refreshes `Cargo.lock` weekly and keeps Cargo 0.x minor
+bumps out of automerge.
+
+```json5
+{
+  extends: [
+    "github>blackdark/renovate-base//default.json5",
+    "github>blackdark/renovate-base//rust.json5",
+  ],
+}
+```
+
 **Traefik Yaegi plugins:** `go.json5` is still useful for keeping mise/go.mod
 aligned on ordinary modules. A compiled sidecar image (`golang:` in a
 Dockerfile) does **not** need to match Traefik's Go. If you want the *plugin*
