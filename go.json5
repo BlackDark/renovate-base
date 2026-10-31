@@ -1,0 +1,54 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  // Opt-in preset for Go repos. Extend alongside default.json5:
+  //   extends: [
+  //     "github>blackdark/renovate-base",
+  //     "github>blackdark/renovate-base//go.json5",
+  //   ]
+  //
+  // Why this exists (seen on travo #190/#213 and the same class of drift on
+  // gatepost: Dockerfile golang:1.27.x while go.mod still says go 1.26.x):
+  //
+  // 1. Renovate leaves go.mod's `go` directive alone by default — it is a
+  //    minimum language version, not a toolchain pin. Repos that treat it as
+  //    the CI pin (`setup-go` go-version-file: go.mod) therefore never get
+  //    patch bumps unless rangeStrategy is "bump".
+  // 2. mise's `go` tool (depName=go, packageName=golang/go) and the golang
+  //    Docker image are different managers/datasources. Without a shared
+  //    groupName they land in catch-all patch PRs while go.mod stays behind.
+  // 3. matchPackageNames no longer falls back to depName (Renovate 38+). Use
+  //    matchDepNames for the mise/gomod `go` tool; matchPackageNames only for
+  //    the Docker image names.
+  //
+  // Repos that also pin Go in .mise.toml should keep that pin equal to the
+  // go.mod directive (a small TestGoVersionPinsAgree-style gate pays for
+  // itself). This preset groups the Renovate updates; it does not enforce
+  // equality on its own.
+  postUpdateOptions: ["gomodTidy"],
+  packageRules: [
+    {
+      description: "Bump go.mod go directive (Renovate leaves it alone by default)",
+      matchManagers: ["gomod"],
+      matchDepNames: ["go"],
+      matchDepTypes: ["golang"],
+      rangeStrategy: "bump",
+    },
+    {
+      description: "Keep mise + go.mod go pins in one PR",
+      matchManagers: ["mise", "gomod"],
+      matchDepNames: ["go"],
+      groupName: "go toolchain",
+      groupSlug: "go-toolchain",
+    },
+    {
+      description: "Keep golang docker images with the go toolchain group",
+      matchPackageNames: [
+        "golang",
+        "docker.io/library/golang",
+        "/^golang$/",
+      ],
+      groupName: "go toolchain",
+      groupSlug: "go-toolchain",
+    },
+  ],
+}

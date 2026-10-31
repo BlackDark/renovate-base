@@ -1,5 +1,9 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  // Go repos: also extend github>blackdark/renovate-base//go.json5 — see
+  // that file. Default here stays language-agnostic; Go's go.mod directive,
+  // mise go, and golang Docker images otherwise drift (Renovate skips the
+  // go directive by default; matchPackageNames does not match mise's go).
   extends: [
     "config:best-practices",
     "customManagers:githubActionsVersions",
