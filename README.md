@@ -2,6 +2,9 @@
 
 The renovate base config for all of my repositories.
 
+Agent / contributor pitfalls (unknown matchers, mise depNames, Traefik
+overrides): see [`AGENTS.md`](AGENTS.md).
+
 ## Usage
 
 It can be used as documented at [renovate](https://docs.renovatebot.com/config-presets/#github) or in the `renovate.json5` file in this repository.

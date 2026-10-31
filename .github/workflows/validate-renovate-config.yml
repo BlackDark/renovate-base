@@ -1,19 +1,42 @@
 name: validate-renovate-config
 
 on:
-  push:
-    paths:
-      - "**/*.json5"
-      - ".github/workflows/validate-renovate-config.yml"
+  # No workflow-level path filters on pull_request: those skip the whole
+  # workflow, so the ruleset-required job `check` never reports and merges
+  # stall. Detect renovate-config paths with dorny/paths-filter instead and
+  # only then pull the Renovate image / run the validator.
   pull_request:
-    paths:
-      - "**/*.json5"
-      - ".github/workflows/validate-renovate-config.yml"
+  push:
+    branches: [main]
 
 permissions: {}
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions:
+      contents: read
+      # paths-filter reads the PR file list via the API on pull_request.
+      pull-requests: read
+    outputs:
+      renovate: ${{ steps.filter.outputs.renovate }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - id: filter
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        with:
+          filters: |
+            renovate:
+              - '**/*.json5'
+              - '.github/workflows/validate-renovate-config.yml'
+
   validate:
+    needs: changes
+    if: needs.changes.outputs.renovate == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -38,10 +61,16 @@ jobs:
           renovate-config-validator --strict --no-global ${files}
 
   check:
+    # Always report: skipped `validate` is fine (docs-only); failure/cancel is not.
     if: always()
-    needs: [validate]
+    needs: [changes, validate]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
-      - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+      - name: Aggregate
+        if: >-
+          needs.changes.result == 'failure' ||
+          needs.changes.result == 'cancelled' ||
+          needs.validate.result == 'failure' ||
+          needs.validate.result == 'cancelled'
         run: exit 1
