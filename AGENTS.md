@@ -4,9 +4,13 @@ Presets in this repo are shared across projects. Prefer extending them over
 copying rules. Validate local configs with `renovate-config-validator --strict`
 (see `.github/workflows/validate-renovate-config.yml`) before merging.
 
-The `main` ruleset requires the workflow job named `check`. That workflow runs
-on **every** pull request (not only `*.json5` changes) so docs-only PRs still
-get a status. Do not reintroduce `pull_request.paths` filters that skip it.
+The `main` ruleset requires the workflow job named `check`. Do **not** put
+`paths:` filters on the `pull_request` trigger of that workflow: GitHub skips
+the whole workflow, `check` never reports, and merges stall.
+
+Instead, always start the workflow on PRs, detect `*.json5` / workflow changes
+in a cheap `changes` job, run the Renovate validator only when needed, and let
+`check` aggregate (`skipped` validate = green; `failure`/`cancelled` = red).
 
 ## Extending
 
