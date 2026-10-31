@@ -6,8 +6,8 @@
   //     "github>blackdark/renovate-base//go.json5",
   //   ]
   //
-  // Why this exists (seen on travo #190/#213 and the same class of drift on
-  // gatepost: Dockerfile golang:1.27.x while go.mod still says go 1.26.x):
+  // Why this exists (seen on travo #190/#213; same class of drift when a
+  // Dockerfile golang: tag moves while go.mod stays put):
   //
   // 1. Renovate leaves go.mod's `go` directive alone by default — it is a
   //    minimum language version, not a toolchain pin. Repos that treat it as
@@ -24,6 +24,13 @@
   // go.mod directive (a small TestGoVersionPinsAgree-style gate pays for
   // itself). This preset groups the Renovate updates; it does not enforce
   // equality on its own.
+  //
+  // Traefik Yaegi plugins (e.g. gatepost): do NOT extend this unbounded.
+  // Cap Go with allowedVersions to the Traefik line you e2e against (that
+  // release's go.mod), e.g. traefik v3.7.16 → go 1.26 → "<1.27.0". Traefik's
+  // build Go is the product ceiling here; Yaegi v0.16.1's older language
+  // ceiling (~1.22) is a separate concern — raise the Renovate cap only when
+  // the e2e Traefik image moves.
   postUpdateOptions: ["gomodTidy"],
   packageRules: [
     {
