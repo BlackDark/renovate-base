@@ -9,8 +9,9 @@ The `main` ruleset requires the workflow job named `check`. Do **not** put
 the whole workflow, `check` never reports, and merges stall.
 
 Instead, always start the workflow on PRs, detect `*.json5` / workflow changes
-in a cheap `changes` job, run the Renovate validator only when needed, and let
-`check` aggregate (`skipped` validate = green; `failure`/`cancelled` = red).
+with pinned `dorny/paths-filter` in a cheap `changes` job, run the Renovate
+validator only when needed, and let `check` aggregate (`skipped` validate =
+green; `failure`/`cancelled` = red).
 
 ## Extending
 
