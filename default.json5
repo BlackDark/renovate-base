@@ -7,6 +7,7 @@
   extends: [
     "config:best-practices",
     "customManagers:githubActionsVersions",
+    "security:minimumReleaseAgeNpm", // npm releases wait 3 days (unpublish window, hijacked releases)
     "schedule:weekly",
     ":automergeMinor",
     ":automergeDigest",
@@ -14,6 +15,8 @@
     ":prHourlyLimitNone",
   ],
   labels: ["dependencies"],
+  // Every repo uses Conventional Commits; do not rely on autodetection.
+  semanticCommits: "enabled",
   packageRules: [
     {
       groupName: "devDependencies (non-major)",
