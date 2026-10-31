@@ -31,8 +31,9 @@ preset they drift apart (CI on `go-version-file: go.mod`, image on a newer
 See the comments in [`go.json5`](go.json5) for the failure mode and matcher
 details (`matchDepNames` vs `matchPackageNames`).
 
-**Traefik Yaegi plugins:** do not extend `go.json5` unbounded. Cap Go (gomod
-`go` / `toolchain`, and `golang` images) with `allowedVersions` to the Traefik
-release you e2e against — that release's `go.mod` is the ceiling (e.g. Traefik
-v3.7.16 → `go 1.26` → `"<1.27.0"`). Raise the cap when the e2e Traefik image
-moves.
+**Traefik Yaegi plugins:** `go.json5` is still useful for keeping mise/go.mod
+aligned on ordinary modules. A compiled sidecar image (`golang:` in a
+Dockerfile) does **not** need to match Traefik's Go. If you want the *plugin*
+`go.mod` directive capped to the Traefik line you e2e against, add a repo-local
+`allowedVersions` on `go`/`toolchain` — don't conflate that with the builder
+image.

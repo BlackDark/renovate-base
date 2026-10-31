@@ -25,12 +25,12 @@
   // itself). This preset groups the Renovate updates; it does not enforce
   // equality on its own.
   //
-  // Traefik Yaegi plugins (e.g. gatepost): do NOT extend this unbounded.
-  // Cap Go with allowedVersions to the Traefik line you e2e against (that
-  // release's go.mod), e.g. traefik v3.7.16 → go 1.26 → "<1.27.0". Traefik's
-  // build Go is the product ceiling here; Yaegi v0.16.1's older language
-  // ceiling (~1.22) is a separate concern — raise the Renovate cap only when
-  // the e2e Traefik image moves.
+  // Traefik Yaegi plugins: this preset is fine for ordinary Go binaries
+  // (e.g. a standalone extauthz Dockerfile can track golang: independently).
+  // The plugin module's `go` directive is what CI/Yaegi-adjacent tooling
+  // sees — if you want that capped to the Traefik line you e2e against,
+  // add allowedVersions on matchDepNames ["go","toolchain"] in the repo
+  // config. Do not assume the Dockerfile builder must match Traefik.
   postUpdateOptions: ["gomodTidy"],
   packageRules: [
     {
