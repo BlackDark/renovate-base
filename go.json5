@@ -1,0 +1,66 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  // Opt-in preset for Go repos. Extend alongside default.json5:
+  //   extends: [
+  //     "github>blackdark/renovate-base//default.json5",
+  //     "github>blackdark/renovate-base//go.json5",
+  //   ]
+  //
+  // Why this exists (seen on travo #190/#213; same class of drift when a
+  // Dockerfile golang: tag moves while go.mod stays put):
+  //
+  // 1. Renovate leaves go.mod's `go` directive alone by default — it is a
+  //    minimum language version, not a toolchain pin. Repos that treat it as
+  //    the CI pin (`setup-go` go-version-file: go.mod) therefore never get
+  //    patch bumps unless rangeStrategy is "bump".
+  // 2. mise's go tool (depName=go or core:go, packageName=golang/go) and the
+  //    golang Docker image are different managers/datasources. Without a
+  //    shared groupName they land in catch-all patch PRs while go.mod stays
+  //    behind. Explicit backends keep the backend prefix in depName
+  //    (`core:go`, `asdf:golang` — asdf's tool table names Go `golang`,
+  //    not `go` — and `vfox:go`).
+  // 3. matchPackageNames no longer falls back to depName (Renovate 38+). Use
+  //    matchDepNames for the mise/gomod `go` tool; matchPackageNames only for
+  //    the Docker image names.
+  //
+  // Repos that also pin Go in .mise.toml should keep that pin equal to the
+  // go.mod directive (a small TestGoVersionPinsAgree-style gate pays for
+  // itself). This preset groups the Renovate updates; it does not enforce
+  // equality on its own.
+  //
+  // Traefik Yaegi plugins: this preset is fine for ordinary Go binaries
+  // (e.g. a standalone extauthz Dockerfile can track golang: independently).
+  // The plugin module's `go` directive is what CI/Yaegi-adjacent tooling
+  // sees — if you want that capped to the Traefik line you e2e against,
+  // add allowedVersions on matchDepNames ["go","toolchain"] in the repo
+  // config. Do not assume the Dockerfile builder must match Traefik.
+  postUpdateOptions: ["gomodTidy"],
+  packageRules: [
+    {
+      description: "Bump go.mod go directive (Renovate leaves it alone by default)",
+      matchManagers: ["gomod"],
+      matchDepNames: ["go"],
+      matchDepTypes: ["golang"],
+      rangeStrategy: "bump",
+    },
+    {
+      description: "Keep mise + go.mod go pins in one PR",
+      matchManagers: ["mise", "gomod"],
+      // Short name (`go =`) and explicit backends (`"core:go" =`,
+      // `"asdf:golang" =` — asdf registry name is golang).
+      matchDepNames: ["go", "core:go", "asdf:golang", "vfox:go"],
+      groupName: "go toolchain",
+      groupSlug: "go-toolchain",
+    },
+    {
+      description: "Keep golang docker images with the go toolchain group",
+      matchPackageNames: [
+        "golang",
+        "docker.io/library/golang",
+        "/^golang$/",
+      ],
+      groupName: "go toolchain",
+      groupSlug: "go-toolchain",
+    },
+  ],
+}
