@@ -16,8 +16,9 @@
   // 2. mise's go tool (depName=go or core:go, packageName=golang/go) and the
   //    golang Docker image are different managers/datasources. Without a
   //    shared groupName they land in catch-all patch PRs while go.mod stays
-  //    behind. Explicit backends (`core:go`, `asdf:go`, …) keep the backend
-  //    prefix in depName — match those too.
+  //    behind. Explicit backends keep the backend prefix in depName
+  //    (`core:go`, `asdf:golang` — asdf's tool table names Go `golang`,
+  //    not `go` — and `vfox:go`).
   // 3. matchPackageNames no longer falls back to depName (Renovate 38+). Use
   //    matchDepNames for the mise/gomod `go` tool; matchPackageNames only for
   //    the Docker image names.
@@ -45,8 +46,9 @@
     {
       description: "Keep mise + go.mod go pins in one PR",
       matchManagers: ["mise", "gomod"],
-      // Short name (`go =`) and explicit backends (`"core:go" =`).
-      matchDepNames: ["go", "core:go", "asdf:go", "vfox:go"],
+      // Short name (`go =`) and explicit backends (`"core:go" =`,
+      // `"asdf:golang" =` — asdf registry name is golang).
+      matchDepNames: ["go", "core:go", "asdf:golang", "vfox:go"],
       groupName: "go toolchain",
       groupSlug: "go-toolchain",
     },
