@@ -27,7 +27,7 @@ green; `failure`/`cancelled` = red).
 - Always use the `//default.json5` (or `//go.json5`) path. A bare
   `github>blackdark/renovate-base` only resolves `default.json` /
   `renovate.json`, not `default.json5`, and Renovate stops the repo.
-- `default.json5` is language-agnostic. `go.json5` is opt-in.
+- `default.json5` is language-agnostic. `go.json5` and `rust.json5` are opt-in.
 
 ## Go preset (`go.json5`) — pitfalls
 
