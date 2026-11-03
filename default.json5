@@ -14,6 +14,10 @@
     ":prHourlyLimitNone",
   ],
   timezone: "Europe/Berlin",
+  // Fewer rebases, fewer CI runs: with the no-limit PR presets each merge to main would otherwise
+  // rebase every open PR. Repos whose ruleset requires branches to be up to date must override this
+  // with "behind-base-branch", or automerge stalls once a PR falls behind main (see README).
+  rebaseWhen: "conflicted",
   lockFileMaintenance: {
     enabled: true,
     automerge: true,

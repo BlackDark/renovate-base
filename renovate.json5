@@ -1,3 +1,5 @@
 {
   extends: ["github>blackdark/renovate-base//default.json5"],
+  // This repo's ruleset requires up-to-date branches
+  rebaseWhen: "behind-base-branch",
 }

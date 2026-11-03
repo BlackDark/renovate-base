@@ -27,6 +27,22 @@ The path after `//` is required: an unnamed preset only resolves to
   labelled `security`. A release without a publication timestamp (many Docker tags on GHCR, Quay
   or ECR) is not delayed.
 - Lock file maintenance is automerged.
+- `rebaseWhen: "conflicted"`: PRs are rebased only on conflicts, not on every push to main. This
+  saves CI runs. Two updates can then merge without being tested together, and a repo that
+  requires branches to be up to date before merging cannot automerge a PR that fell behind. Such
+  a repo overrides it (see below).
+
+#### Repos that require up-to-date branches
+
+Ruleset or branch protection with "Require branches to be up to date before merging"
+(`strict_required_status_checks_policy`): set `rebaseWhen` back in the repo config.
+
+```json5
+{
+  extends: ["github>blackdark/renovate-base//default.json5"],
+  rebaseWhen: "behind-base-branch", // or "auto"
+}
+```
 
 ### Go projects
 
