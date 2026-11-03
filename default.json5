@@ -14,9 +14,6 @@
     ":prHourlyLimitNone",
   ],
   timezone: "Europe/Berlin",
-  // The prConcurrentLimitNone presets keep every PR open; without this each merge to main
-  // rebases all of them and reruns CI. Rebase only on conflicts.
-  rebaseWhen: "conflicted",
   lockFileMaintenance: {
     enabled: true,
     automerge: true,
