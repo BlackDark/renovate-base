@@ -6,7 +6,6 @@
   // go directive by default; matchPackageNames does not match mise's go).
   extends: [
     "config:best-practices",
-    "security:minimumReleaseAgeNpm", // npm releases wait 3 days (unpublish window, hijacked releases)
     "customManagers:githubActionsVersions",
     "schedule:weekly",
     ":automergeMinor",
@@ -14,7 +13,6 @@
     ":prConcurrentLimitNone",
     ":prHourlyLimitNone",
   ],
-  labels: ["dependencies"],
   timezone: "Europe/Berlin",
   // The prConcurrentLimitNone presets keep every PR open; without this each merge to main
   // rebases all of them and reruns CI. Rebase only on conflicts.
@@ -36,6 +34,7 @@
     minimumReleaseAgeBehaviour: "timestamp-optional",
     automerge: false,
   },
+  labels: ["dependencies"],
   packageRules: [
     {
       groupName: "devDependencies (non-major)",
