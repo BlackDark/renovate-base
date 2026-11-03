@@ -13,6 +13,28 @@
     ":prConcurrentLimitNone",
     ":prHourlyLimitNone",
   ],
+  timezone: "Europe/Berlin",
+  // Fewer rebases, fewer CI runs: with the no-limit PR presets each merge to main would otherwise
+  // rebase every open PR. Repos whose ruleset requires branches to be up to date must override this
+  // with "behind-base-branch", or automerge stalls once a PR falls behind main (see README).
+  rebaseWhen: "conflicted",
+  lockFileMaintenance: {
+    enabled: true,
+    automerge: true,
+  },
+  // Second advisory source next to GitHub's Dependabot alerts; works without the alerts enabled.
+  osvVulnerabilityAlerts: true,
+  vulnerabilityAlerts: {
+    enabled: true,
+    labels: ["dependencies", "security"],
+    schedule: ["at any time"],
+    // One day, not at once: pnpm 12 refuses packages younger than a day. Set here because
+    // Renovate appends these rules after packageRules.
+    minimumReleaseAge: "1 day",
+    // Docker tags and other datasources without release dates must not wait forever
+    minimumReleaseAgeBehaviour: "timestamp-optional",
+    automerge: false,
+  },
   labels: ["dependencies"],
   packageRules: [
     {
@@ -58,6 +80,14 @@
       matchUpdateTypes: ["minor", "patch", "digest"],
       groupName: "GitHub Actions (non-major)",
       groupSlug: "github-actions-non-major",
+    },
+    {
+      // Last, so it beats the automerge and groups above: 0.x minors may break (semver)
+      description: "0.x: minor may break, own PR, review by hand",
+      matchUpdateTypes: ["minor"],
+      matchCurrentVersion: "/^v?0\\./",
+      groupName: null,
+      automerge: false,
     },
   ],
 }

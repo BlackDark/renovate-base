@@ -18,6 +18,32 @@ It can be used as documented at [renovate](https://docs.renovatebot.com/config-p
 The path after `//` is required: an unnamed preset only resolves to
 `default.json` / `renovate.json`, not `default.json5`.
 
+### What `default.json5` sets
+
+- Weekly schedule, non-major updates grouped and automerged; majors get their own PR.
+- 0.x minors get their own PR and are not automerged (a minor may break).
+- npm releases wait 3 days (`security:minimumReleaseAgeNpm`).
+- Security fixes (Dependabot alerts and OSV) come at any time, after one day, never automerged,
+  labelled `security`. A release without a publication timestamp (many Docker tags on GHCR, Quay
+  or ECR) is not delayed.
+- Lock file maintenance is automerged.
+- `rebaseWhen: "conflicted"`: PRs are rebased only on conflicts, not on every push to main. This
+  saves CI runs. Two updates can then merge without being tested together, and a repo that
+  requires branches to be up to date before merging cannot automerge a PR that fell behind. Such
+  a repo overrides it (see below).
+
+#### Repos that require up-to-date branches
+
+Ruleset or branch protection with "Require branches to be up to date before merging"
+(`strict_required_status_checks_policy`): set `rebaseWhen` back in the repo config.
+
+```json5
+{
+  extends: ["github>blackdark/renovate-base//default.json5"],
+  rebaseWhen: "behind-base-branch", // or "auto"
+}
+```
+
 ### Go projects
 
 Also extend `go.json5`. Renovate does not bump `go.mod`'s `go` directive by
