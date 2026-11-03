@@ -6,6 +6,7 @@
   // go directive by default; matchPackageNames does not match mise's go).
   extends: [
     "config:best-practices",
+    "security:minimumReleaseAgeNpm", // npm releases wait 3 days (unpublish window, hijacked releases)
     "customManagers:githubActionsVersions",
     "schedule:weekly",
     ":automergeMinor",
@@ -14,6 +15,27 @@
     ":prHourlyLimitNone",
   ],
   labels: ["dependencies"],
+  timezone: "Europe/Berlin",
+  // The prConcurrentLimitNone presets keep every PR open; without this each merge to main
+  // rebases all of them and reruns CI. Rebase only on conflicts.
+  rebaseWhen: "conflicted",
+  lockFileMaintenance: {
+    enabled: true,
+    automerge: true,
+  },
+  // Second advisory source next to GitHub's Dependabot alerts; works without the alerts enabled.
+  osvVulnerabilityAlerts: true,
+  vulnerabilityAlerts: {
+    enabled: true,
+    labels: ["dependencies", "security"],
+    schedule: ["at any time"],
+    // One day, not at once: pnpm 12 refuses packages younger than a day. Set here because
+    // Renovate appends these rules after packageRules.
+    minimumReleaseAge: "1 day",
+    // Docker tags and other datasources without release dates must not wait forever
+    minimumReleaseAgeBehaviour: "timestamp-optional",
+    automerge: false,
+  },
   packageRules: [
     {
       groupName: "devDependencies (non-major)",
@@ -58,6 +80,14 @@
       matchUpdateTypes: ["minor", "patch", "digest"],
       groupName: "GitHub Actions (non-major)",
       groupSlug: "github-actions-non-major",
+    },
+    {
+      // Last, so it beats the automerge and groups above: 0.x minors may break (semver)
+      description: "0.x: minor may break, own PR, review by hand",
+      matchUpdateTypes: ["minor"],
+      matchCurrentVersion: "/^v?0\\./",
+      groupName: null,
+      automerge: false,
     },
   ],
 }
