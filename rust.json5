@@ -1,0 +1,42 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  // Opt-in preset for Rust repos. Extend alongside default.json5:
+  //   extends: [
+  //     "github>blackdark/renovate-base//default.json5",
+  //     "github>blackdark/renovate-base//rust.json5",
+  //   ]
+  //
+  // Why this exists:
+  // 1. Renovate has no manager for rust-toolchain.toml. The regex manager below
+  //    bumps a pinned `channel = "x.y.z"`. Channels like "stable" or "esp" do not
+  //    match and are left alone (an espup toolchain is bumped by hand together with
+  //    the espup install version).
+  // 2. Cargo.lock drifts between dependency PRs; a weekly lock file maintenance
+  //    PR refreshes it.
+  // 3. Cargo treats 0.x minor bumps as breaking, so those need a human even
+  //    though default.json5 automerges minors.
+  customManagers: [
+    {
+      customType: "regex",
+      description: "Rust toolchain channel in rust-toolchain.toml",
+      managerFilePatterns: ["/(^|/)rust-toolchain\\.toml$/"],
+      matchStrings: ["channel\\s*=\\s*\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""],
+      depNameTemplate: "rust",
+      packageNameTemplate: "rust-lang/rust",
+      datasourceTemplate: "github-releases",
+    },
+  ],
+  lockFileMaintenance: {
+    enabled: true,
+    automerge: true,
+  },
+  packageRules: [
+    {
+      description: "Cargo 0.x: a minor bump may break, review by hand",
+      matchManagers: ["cargo"],
+      matchUpdateTypes: ["minor"],
+      matchCurrentVersion: "/^v?0\\./",
+      automerge: false,
+    },
+  ],
+}
