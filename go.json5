@@ -65,7 +65,7 @@
     {
       // gomod uses require/indirect, not npm's "dependencies", so default.json5 groups nothing here.
       // Disjoint from the toolchain group: that one is depType golang/toolchain.
-      description: "Go modules: non-major in one PR",
+      description: "Go modules (direct require, not // indirect): non-major in one PR",
       matchManagers: ["gomod"],
       matchDepTypes: ["require"],
       matchUpdateTypes: ["minor", "patch"],
@@ -73,15 +73,6 @@
       matchCurrentVersion: "!/^v?0\\./",
       groupName: "go modules (non-major)",
       groupSlug: "go-modules-non-major",
-    },
-    {
-      description: "Go tool directive (dev tooling): non-major in one PR",
-      matchManagers: ["gomod"],
-      matchDepTypes: ["tool"],
-      matchUpdateTypes: ["minor", "patch"],
-      matchCurrentVersion: "!/^v?0\\./",
-      groupName: "go tools (non-major)",
-      groupSlug: "go-tools-non-major",
     },
   ],
 }

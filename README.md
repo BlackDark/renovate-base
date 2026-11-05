@@ -21,7 +21,8 @@ The path after `//` is required: an unnamed preset only resolves to
 ### What `default.json5` sets
 
 - Weekly schedule, non-major updates grouped and automerged; majors get their own PR.
-- npm: dev and non-dev non-major updates are grouped separately. Docker patch / minor, digests and
+- npm: `devDependencies` and `dependencies` non-major updates are grouped separately
+  (`optionalDependencies` and `peerDependencies` are not). Docker patch / minor, digests and
   GitHub Actions each get one group. Go and Python have their own presets (below).
 - 0.x minors get their own PR and are not automerged (a minor may break).
 - npm releases wait 3 days (`security:minimumReleaseAgeNpm`).
@@ -72,8 +73,8 @@ Dockerfile) does **not** need to match Traefik's Go. If you want the *plugin*
 `allowedVersions` on `go`/`toolchain` — don't conflate that with the builder
 image.
 
-Go module updates (`require` and `tool` directives, non-major, not 0.x) are grouped into
-`go modules (non-major)` and `go tools (non-major)`. The `npm` depTypes in `default.json5` do not
+Go module updates (`require` directives not marked `// indirect`, non-major, not 0.x) are grouped
+into `go modules (non-major)`. The `npm` depTypes in `default.json5` do not
 apply to gomod, so without this each module got its own PR.
 
 ### Python projects
@@ -82,7 +83,8 @@ Also extend `python.json5` for `pyproject.toml` repos (uv, pdm, hatch). The pep6
 other depTypes than npm, so `default.json5` groups nothing there. Runtime deps
 (`project.dependencies`, `project.optional-dependencies`) and dev deps (`dependency-groups`,
 `tool.uv.dev-dependencies`, `tool.pdm.dev-dependencies`) get one non-major PR each; 0.x stays
-separate.
+separate. A dependency with a `[tool.uv.sources]` entry gets the depType `tool.uv.sources`, which
+neither rule matches, so it is not grouped.
 
 ```json5
 {
