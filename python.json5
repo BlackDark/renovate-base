@@ -1,0 +1,38 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  // Opt-in preset for Python repos using pyproject.toml (uv, pdm, hatch, poetry's PEP 621 mode).
+  // Extend alongside default.json5:
+  //   extends: [
+  //     "github>blackdark/renovate-base//default.json5",
+  //     "github>blackdark/renovate-base//python.json5",
+  //   ]
+  //
+  // default.json5 splits dev/non-dev by the npm depTypes "dependencies" / "devDependencies".
+  // The pep621 manager (which also handles uv) names them differently, so nothing was grouped.
+  // Rules sit after default.json5's, so they must exclude 0.x themselves (own PR, no automerge there).
+  packageRules: [
+    {
+      description: "Python runtime deps: non-major in one PR",
+      matchManagers: ["pep621"],
+      matchDepTypes: ["project.dependencies", "project.optional-dependencies"],
+      matchUpdateTypes: ["minor", "patch"],
+      matchCurrentVersion: "!/^v?0\\./",
+      groupName: "python dependencies (non-major)",
+      groupSlug: "python-dependencies-non-major",
+    },
+    {
+      // PEP 735 groups and the legacy uv/pdm dev tables are not shipped with the package.
+      description: "Python dev deps (PEP 735 groups, uv/pdm dev tables): non-major in one PR",
+      matchManagers: ["pep621"],
+      matchDepTypes: [
+        "dependency-groups",
+        "tool.uv.dev-dependencies",
+        "tool.pdm.dev-dependencies",
+      ],
+      matchUpdateTypes: ["minor", "patch"],
+      matchCurrentVersion: "!/^v?0\\./",
+      groupName: "python dev dependencies (non-major)",
+      groupSlug: "python-dev-dependencies-non-major",
+    },
+  ],
+}
