@@ -37,10 +37,8 @@ The path after `//` is required: an unnamed preset only resolves to
 
 #### Repos that use a separate merge driver
 
-The shared preset enables Renovate automerge for minor, patch, pin and digest
-updates and lock-file maintenance. A top-level `automerge: false` alone does
-not override inherited update-type settings. Repositories using a separate
-merge driver can disable them explicitly:
+The preset automerges minor, patch, pin, digest and lock-file maintenance via
+update-type rules, so a top-level `automerge: false` alone does not win. Opt out fully:
 
 ```json5
 {
@@ -49,18 +47,15 @@ merge driver can disable them explicitly:
   platformAutomerge: false,
   lockFileMaintenance: { automerge: false },
   packageRules: [{
+    // keep last so it beats inherited rules
     matchUpdateTypes: ["major", "minor", "patch", "pin", "pinDigest", "digest", "lockFileMaintenance"],
     automerge: false,
   }],
 }
 ```
 
-Keep the opt-out rule after inherited and repo-specific rules. Disable any
-existing GitHub auto-merge requests on open PRs when migrating: changing
-`platformAutomerge` does not cancel requests already enabled. Validate the
-config with `renovate-config-validator --strict --no-global` and check
-representative updates in a Renovate dry run: syntax validation alone does not
-prove effective update behavior.
+When migrating, turn off GitHub auto-merge on open PRs (`platformAutomerge` does not
+cancel it). Validate with `renovate-config-validator --strict` and check a dry run.
 
 #### Repos that require up-to-date branches
 
