@@ -1,0 +1,20 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  // Opt-in preset for Rust repos. Extend alongside default.json5:
+  //   extends: [
+  //     "github>blackdark/renovate-base//default.json5",
+  //     "github>blackdark/renovate-base//rust.json5",
+  //   ]
+  //
+  // default.json5 enables weekly lock file maintenance. For Cargo, that can
+  // select a new 0.x minor within the declared range, so those PRs need review.
+  // Toolchain channels use Renovate's built-in TOML-aware rust-toolchain manager.
+  packageRules: [
+    {
+      description: "Cargo lock maintenance may include 0.x minors; review by hand",
+      matchManagers: ["cargo"],
+      matchUpdateTypes: ["lockFileMaintenance"],
+      automerge: false,
+    },
+  ],
+}
