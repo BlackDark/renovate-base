@@ -31,7 +31,8 @@ The path after `//` is required: an unnamed preset only resolves to
   or ECR) is not delayed.
 - Lock file maintenance is automerged.
 - The `# actionlint-archive` marker in workflow and snippet YAML tracks an actionlint release
-  and its archive SHA-256 together; see [agent-presets CI guidance](https://github.com/BlackDark/agent-presets/blob/main/stack/ci.md).
+  and its archive SHA-256 together. Use a `v`-prefixed release tag and place the marker,
+  `ACTIONLINT_VERSION` and `ACTIONLINT_SHA256` on consecutive lines as in the CI snippet.
 - `rebaseWhen: "conflicted"`: PRs are rebased only on conflicts, not on every push to main. This
   saves CI runs. Two updates can then merge without being tested together, and a repo that
   requires branches to be up to date before merging cannot automerge a PR that fell behind. Such
