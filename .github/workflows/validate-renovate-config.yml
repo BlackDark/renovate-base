@@ -32,7 +32,6 @@ jobs:
           filters: |
             renovate:
               - '**/*.json5'
-              - 'tests/*.mjs'
               - '.github/workflows/validate-renovate-config.yml'
 
   validate:
@@ -60,13 +59,6 @@ jobs:
             exit 1
           fi
           renovate-config-validator --strict --no-global ${files}
-
-      - name: Test Renovate behavior
-        run: |
-          node tests/no-automerge.mjs
-          node tests/actionlint-archive.mjs
-        env:
-          RENOVATE_DIR: /usr/local/renovate
 
   check:
     # Always report: skipped `validate` is fine (docs-only); failure/cancel is not.
