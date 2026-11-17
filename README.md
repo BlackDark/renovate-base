@@ -38,7 +38,7 @@ The path after `//` is required: an unnamed preset only resolves to
 #### Repos that use a separate merge driver
 
 The preset automerges minor, patch, pin, digest and lock-file maintenance via
-update-type rules, so a top-level `automerge: false` alone does not win. Opt out fully:
+update-type settings, so a top-level `automerge: false` alone does not win. Opt out fully:
 
 ```json5
 {
