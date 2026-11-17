@@ -11,10 +11,8 @@
   //    bumps a pinned `channel = "x.y.z"`. Channels like "stable" or "esp" do not
   //    match and are left alone (an espup toolchain is bumped by hand together with
   //    the espup install version).
-  // 2. Cargo.lock drifts between dependency PRs; a weekly lock file maintenance
-  //    PR refreshes it.
-  // 3. Cargo treats 0.x minor bumps as breaking, so those need a human even
-  //    though default.json5 automerges minors.
+  // 2. default.json5 enables weekly lock file maintenance. For Cargo, that can
+  //    select a new 0.x minor within the declared range, so those PRs need review.
   customManagers: [
     {
       customType: "regex",
@@ -26,16 +24,11 @@
       datasourceTemplate: "github-releases",
     },
   ],
-  lockFileMaintenance: {
-    enabled: true,
-    automerge: true,
-  },
   packageRules: [
     {
-      description: "Cargo 0.x: a minor bump may break, review by hand",
+      description: "Cargo lock maintenance may include 0.x minors; review by hand",
       matchManagers: ["cargo"],
-      matchUpdateTypes: ["minor"],
-      matchCurrentVersion: "/^v?0\\./",
+      matchUpdateTypes: ["lockFileMaintenance"],
       automerge: false,
     },
   ],

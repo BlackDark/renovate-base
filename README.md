@@ -69,8 +69,8 @@ details (`matchDepNames` vs `matchPackageNames`).
 ### Rust projects
 
 Also extend `rust.json5`: it bumps a pinned `channel = "x.y.z"` in
-`rust-toolchain.toml`, refreshes `Cargo.lock` weekly and keeps Cargo 0.x minor
-bumps out of automerge.
+`rust-toolchain.toml` and requires review for Cargo lock-file maintenance,
+which can include 0.x minor updates.
 
 ```json5
 {
