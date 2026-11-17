@@ -39,6 +39,20 @@
   labels: ["dependencies"],
   // Every repo uses Conventional Commits; do not rely on autodetection.
   semanticCommits: "enabled",
+  // Keep the version and verified release-archive checksum in CI snippets
+  // together. The marker deliberately differs from Renovate's standard
+  // githubActionsVersions annotation, so only this manager updates the pair.
+  customManagers: [
+    {
+      customType: "regex",
+      managerFilePatterns: ["/(^|/)(\\.github/workflows|snippets)/.*\\.ya?ml$/"],
+      matchStrings: [
+        "# actionlint-archive\\s+ACTIONLINT_VERSION: \"(?<currentValue>v[^\"]+)\"\\s+ACTIONLINT_SHA256: \"(?<currentDigest>[a-f0-9]{64})\"",
+      ],
+      depNameTemplate: "rhysd/actionlint",
+      datasourceTemplate: "github-release-attachments",
+    },
+  ],
   packageRules: [
     {
       groupName: "devDependencies (non-major)",

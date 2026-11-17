@@ -30,10 +30,31 @@ The path after `//` is required: an unnamed preset only resolves to
   labelled `security`. A release without a publication timestamp (many Docker tags on GHCR, Quay
   or ECR) is not delayed.
 - Lock file maintenance is automerged.
+- The `# actionlint-archive` marker in workflow and snippet YAML tracks an actionlint release
+  and its archive SHA-256 together; see [agent-presets CI guidance](https://github.com/BlackDark/agent-presets/blob/main/stack/ci.md).
 - `rebaseWhen: "conflicted"`: PRs are rebased only on conflicts, not on every push to main. This
   saves CI runs. Two updates can then merge without being tested together, and a repo that
   requires branches to be up to date before merging cannot automerge a PR that fell behind. Such
   a repo overrides it (see below).
+
+#### Repos that use a separate merge driver
+
+The shared preset enables Renovate automerge for minor, patch, pin and digest
+updates and lock-file maintenance. A top-level `automerge: false` alone does
+not override the inherited update-type settings. For a repo where another tool
+merges PRs, use the [tested opt-out example](tests/no-automerge.json5) after
+all inherited presets and keep its final `packageRules` entry last. It disables
+Renovate and platform automerge and overrides lock-file maintenance. Later
+repo-specific rules can re-enable automerge, so review their order too.
+
+Validate the config with `renovate-config-validator --strict --no-global`.
+Validation checks the configuration, not the final behavior of every update.
+The CI regression test resolves the checked-out preset with Renovate and
+checks the effective automerge value for major, minor, patch, pin, pinDigest,
+digest and lock-file maintenance updates. Run it in the same pinned Renovate
+container as CI, with `RENOVATE_DIR=/usr/local/renovate` and
+`node tests/no-automerge.mjs`. For repo-specific overrides, check representative
+updates in a Renovate dry run; other presets and later rules can change results.
 
 #### Repos that require up-to-date branches
 

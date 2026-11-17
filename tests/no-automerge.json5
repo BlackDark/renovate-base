@@ -1,0 +1,10 @@
+{
+  extends: ["github>blackdark/renovate-base//default.json5"],
+  automerge: false,
+  platformAutomerge: false,
+  lockFileMaintenance: { automerge: false },
+  packageRules: [{
+    matchUpdateTypes: ["major", "minor", "patch", "pin", "pinDigest", "digest", "lockFileMaintenance"],
+    automerge: false,
+  }],
+}
