@@ -35,6 +35,28 @@ The path after `//` is required: an unnamed preset only resolves to
   requires branches to be up to date before merging cannot automerge a PR that fell behind. Such
   a repo overrides it (see below).
 
+#### Repos that use a separate merge driver
+
+The preset automerges minor, patch, pin, digest and lock-file maintenance via
+update-type settings, so a top-level `automerge: false` alone does not win. Opt out fully:
+
+```json5
+{
+  extends: ["github>blackdark/renovate-base//default.json5"],
+  automerge: false,
+  platformAutomerge: false,
+  lockFileMaintenance: { automerge: false },
+  packageRules: [{
+    // keep last so it beats inherited rules
+    matchUpdateTypes: ["major", "minor", "patch", "pin", "pinDigest", "digest", "lockFileMaintenance"],
+    automerge: false,
+  }],
+}
+```
+
+When migrating, turn off GitHub auto-merge on open PRs (`platformAutomerge` does not
+cancel it). Validate with `renovate-config-validator --strict` and check a dry run.
+
 #### Repos that require up-to-date branches
 
 Ruleset or branch protection with "Require branches to be up to date before merging"
