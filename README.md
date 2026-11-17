@@ -68,9 +68,9 @@ details (`matchDepNames` vs `matchPackageNames`).
 
 ### Rust projects
 
-Also extend `rust.json5`: it bumps a pinned `channel = "x.y.z"` in
-`rust-toolchain.toml` and requires review for Cargo lock-file maintenance,
-which can include 0.x minor updates.
+Also extend `rust.json5` to require review for Cargo lock-file maintenance,
+which can include 0.x minor updates. Toolchain channels use Renovate's built-in
+TOML-aware `rust-toolchain` manager; no custom regex is needed.
 
 ```json5
 {
