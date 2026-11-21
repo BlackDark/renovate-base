@@ -30,6 +30,8 @@ The path after `//` is required: an unnamed preset only resolves to
   labelled `security`. A release without a publication timestamp (many Docker tags on GHCR, Quay
   or ECR) is not delayed.
 - Lock file maintenance is automerged.
+- Updates Renovate automerges (patch, pin, digest, non-0.x minor, lock file maintenance) get the
+  `automerge` label, for label-driven merge bots. 0.x minors and security fixes never get it.
 - `rebaseWhen: "conflicted"`: PRs are rebased only on conflicts, not on every push to main. This
   saves CI runs. Two updates can then merge without being tested together, and a repo that
   requires branches to be up to date before merging cannot automerge a PR that fell behind. Such

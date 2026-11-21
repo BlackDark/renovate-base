@@ -22,6 +22,7 @@
   lockFileMaintenance: {
     enabled: true,
     automerge: true,
+    addLabels: ["automerge"],
   },
   // Second advisory source next to GitHub's Dependabot alerts; works without the alerts enabled.
   osvVulnerabilityAlerts: true,
@@ -35,6 +36,8 @@
     // Docker tags and other datasources without release dates must not wait forever
     minimumReleaseAgeBehaviour: "timestamp-optional",
     automerge: false,
+    // force replaces rather than merges, so this clears the label the rules above add
+    addLabels: [],
   },
   labels: ["dependencies"],
   // Every repo uses Conventional Commits; do not rely on autodetection.
@@ -83,6 +86,16 @@
       matchUpdateTypes: ["minor", "patch", "digest"],
       groupName: "GitHub Actions (non-major)",
       groupSlug: "github-actions-non-major",
+    },
+    {
+      // addLabels merges across rules, so a later rule cannot clear it: 0.x is excluded here
+      matchUpdateTypes: ["patch", "pin", "digest"],
+      addLabels: ["automerge"],
+    },
+    {
+      matchUpdateTypes: ["minor"],
+      matchCurrentVersion: "!/^v?0\\./",
+      addLabels: ["automerge"],
     },
     {
       // Last, so it beats the automerge and groups above: 0.x minors may break (semver)
