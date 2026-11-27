@@ -20,6 +20,8 @@ The path after `//` is required: an unnamed preset only resolves to
 
 ### What `default.json5` sets
 
+- GitHub Actions are SHA-pinned with full semver comments (`helpers:pinGitHubActionDigestsToSemver`)
+  so floating major tags (`# v7`) don't drift and fail `zizmor` online audits between Renovate runs.
 - Weekly schedule, non-major updates grouped and automerged; majors get their own PR.
 - npm: `devDependencies` and `dependencies` non-major updates are grouped separately
   (`optionalDependencies` and `peerDependencies` are not). Docker patch / minor, digests and

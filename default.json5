@@ -6,6 +6,7 @@
   // go directive by default; matchPackageNames does not match mise's go).
   extends: [
     "config:best-practices",
+    "helpers:pinGitHubActionDigestsToSemver", // immutable vX.Y.Z comments (floating # vX breaks zizmor online audits between runs)
     "customManagers:githubActionsVersions",
     "security:minimumReleaseAgeNpm", // npm releases wait 3 days (unpublish window, hijacked releases)
     "schedule:weekly",
